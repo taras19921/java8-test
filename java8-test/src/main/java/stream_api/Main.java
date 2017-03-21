@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 import stream_api.data.Person;
@@ -18,11 +19,15 @@ public class Main
 	
 	List<Person> persons = Person.createRoster();
 		                   
-	System.out.println("averageAgeCollection: " + averageAgeCollection(persons));
+//	System.out.println("averageAgeCollection: " + averageAgeCollection(persons));
 	
-	System.out.println("averageAge: " + averageAge(persons));
+//	System.out.println("averageAge: " + averageAge(persons));
 
-	System.out.println("averageAgeParallel: " + averageAgeParallel(persons));
+//	System.out.println("averageAgeParallel: " + averageAgeParallel(persons));
+	
+	byGenderReduction(persons);
+	
+	byGenderReductionParallel(persons);
 	
 //	System.out.println("Average age of male members: " + averageAgeCollect(persons).average());
 		
@@ -32,6 +37,36 @@ public class Main
 		
 //	System.out.println("averageAgeByGender: " + averageAgeByGender(persons));
 
+    }
+    
+    public static Map<Person.Sex, List<Person>> byGenderReduction(List<Person> persons) {
+	long t0 = new Date().getTime();
+	long elapsed = 0;
+	Map<Person.Sex, List<Person>> byGenderReduction =
+		    persons
+		        .stream()
+		        .collect(
+		            Collectors.groupingBy(Person::getGender));
+	elapsed = new Date().getTime() - t0;
+	System.out.printf("byGenderReduction: Elapsed time:\t %d ms", elapsed);
+	System.out.println();
+	return byGenderReduction;
+	
+    }
+    
+    public static ConcurrentMap<Person.Sex, List<Person>> byGenderReductionParallel(List<Person> persons) {
+	long t0 = new Date().getTime();
+	long elapsed = 0;
+	ConcurrentMap<Person.Sex, List<Person>> byGenderReduction =
+		    persons
+		    .parallelStream()
+		    .collect(
+		            Collectors.groupingByConcurrent(Person::getGender));
+	elapsed = new Date().getTime() - t0;
+	System.out.printf("byGenderReductionParallel: Elapsed time:\t %d ms", elapsed);
+	System.out.println();
+	return byGenderReduction;
+	
     }
     
     public static double averageAge(List<Person> persons) {
