@@ -33,22 +33,34 @@ public class Main
     }
     
     public static double averageAge(List<Person> persons) {
-	return persons
+	long t0 = new Date().getTime();
+	long elapsed = 0;
+	double averageAge = persons
 		.parallelStream()
 		.filter(p -> p.getGender() == Person.Sex.MALE)
 		.mapToInt(Person::getAge)
 		.average()
 		.getAsDouble();
+	elapsed = new Date().getTime() - t0;
+	System.out.printf("averageAge: Elapsed time:\t %d ms", elapsed);
+	System.out.println();
+	return averageAge;
 	
     }
     
     public static double averageAgeParallel(List<Person> persons) {
-	 return persons
+	long t0 = new Date().getTime();
+	long elapsed = 0;
+	double averageAgeParallel = persons
 		    .parallelStream()
 		    .filter(p -> p.getGender() == Person.Sex.MALE)
 		    .mapToInt(Person::getAge)
 		    .average()
 		    .getAsDouble();
+	elapsed = new Date().getTime() - t0;
+	System.out.printf("averageAgeParallel: Elapsed time:\t %d ms", elapsed);
+	System.out.println();
+	return averageAgeParallel;
 	
     }
 
