@@ -60,7 +60,7 @@ public class Person {
     public static List<Person> createRoster() {
         
         List<Person> roster = new ArrayList<>();
-        for (int i = 0; i < 1000000; i++)
+        for (int i = 0; i < 10000000; i++)
 	{
             roster.add(
                     new Person(

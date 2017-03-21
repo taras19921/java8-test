@@ -18,6 +18,8 @@ public class Main
 	
 	List<Person> persons = Person.createRoster();
 		                   
+	System.out.println("averageAgeCollection: " + averageAgeCollection(persons));
+	
 	System.out.println("averageAge: " + averageAge(persons));
 
 	System.out.println("averageAgeParallel: " + averageAgeParallel(persons));
@@ -43,6 +45,25 @@ public class Main
 		.getAsDouble();
 	elapsed = new Date().getTime() - t0;
 	System.out.printf("averageAge: Elapsed time:\t %d ms", elapsed);
+	System.out.println();
+	return averageAge;
+	
+    }
+
+    public static double averageAgeCollection(List<Person> persons) {
+	long t0 = new Date().getTime();
+	long elapsed = 0;
+	Averager averager = new Averager();
+	
+	for (Person p : persons) {
+	      if (p.getGender() == Person.Sex.MALE) {
+//			System.out.println(p.getName());
+			averager.accept(p.getAge());
+		}
+	}
+	double averageAge = averager.average();
+	elapsed = new Date().getTime() - t0;
+	System.out.printf("averageAgeCollection: Elapsed time:\t %d ms", elapsed);
 	System.out.println();
 	return averageAge;
 	
