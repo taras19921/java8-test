@@ -18,15 +18,28 @@ public class Main
 	
 	List<Person> persons = Person.createRoster();
 		                   
-	System.out.println("Average age of male members: " +
-		    averageAgeCollect(persons).average());
-		
-	System.out.println("namesOfMaleMembersCollect: " + namesOfMaleMembersCollect(persons));
-		
-	System.out.println("totalAgeByGender: " + totalAgeByGender(persons));
-		
-	System.out.println("averageAgeByGender: " + averageAgeByGender(persons));
+	System.out.println("averageAge: " + averageAge(persons));
 
+	System.out.println("averageAgeParallel: " + averageAgeParallel(persons));
+	
+//	System.out.println("Average age of male members: " + averageAgeCollect(persons).average());
+		
+//	System.out.println("namesOfMaleMembersCollect: " + namesOfMaleMembersCollect(persons));
+		
+//	System.out.println("totalAgeByGender: " + totalAgeByGender(persons));
+		
+//	System.out.println("averageAgeByGender: " + averageAgeByGender(persons));
+
+    }
+    
+    public static double averageAge(List<Person> persons) {
+	return persons
+		.parallelStream()
+		.filter(p -> p.getGender() == Person.Sex.MALE)
+		.mapToInt(Person::getAge)
+		.average()
+		.getAsDouble();
+	
     }
     
     public static double averageAgeParallel(List<Person> persons) {
