@@ -36,6 +36,7 @@ public class Winner {
             new Winner(2014, "Italy", "Vincenzo Nibali", "Astana", 3661, Duration.parse("PT89H59M06S"), 19),
             new Winner(2015, "Great Britain", "Chris Froome", "Team Sky", 3360, Duration.parse("PT84H46M14S"), 16),
             new Winner(2016, "Great Britain", "Chris Froome", "Team Sky", 3529, Duration.parse("PT89H04M48S"), 14 ));
+    
     public static void main(String args[]) {
         // Filter and Map -
         List<String> winnersOfToursLessThan3500km = tdfWinners
