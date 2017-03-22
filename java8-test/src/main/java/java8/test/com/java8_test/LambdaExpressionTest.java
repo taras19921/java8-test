@@ -10,9 +10,9 @@ public class LambdaExpressionTest
 
     public static void main(String[] args)
     {
-//	String separator = ",";
-//	Arrays.asList( "a", "b", "d" ).forEach(
-//	( String e ) -> System.out.print( e + separator ) );
+	String separator = ",";
+	Arrays.asList( "a", "b", "d" ).forEach(
+	e -> System.out.print( e + separator ) );
 	
 	//
 	
@@ -24,20 +24,20 @@ public class LambdaExpressionTest
 //	    return result;
 //	} );
 	
-	List<String> names = Arrays.asList("z", "c");
-
-	Collections.sort(names, new Comparator<String>() {
-	    @Override
-	    public int compare(String a, String b) {
-		System.out.println(b.compareTo(a));
-	        return b.compareTo(a);
-	    }
-	});
-	System.out.println(names);
-	
-	Collections.sort(names, (String a, String b) -> {
-	    return b.compareTo(a);
-	});
+//	List<String> names = Arrays.asList("z", "c");
+//
+//	Collections.sort(names, new Comparator<String>() {
+//	    @Override
+//	    public int compare(String a, String b) {
+//		System.out.println(b.compareTo(a));
+//	        return b.compareTo(a);
+//	    }
+//	});
+//	System.out.println(names);
+//	
+//	Collections.sort(names, (String a, String b) -> {
+//	    return b.compareTo(a);
+//	});
 
     }
 
