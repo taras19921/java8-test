@@ -1,8 +1,12 @@
 package files_util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,10 +22,25 @@ import stream_api.data.Person;
 
 public class Main
 {
-    public static void main(String[] args) throws IOException
+    public static void main(String[] args) throws Exception
     {
 
-	printLines(new File("/home/user/Desktop/commands"));
+	List<File> files = Arrays.asList(new File("/home/user/Desktop/cache-example (copy).xml"),
+		new File("/home/user/Desktop/cache-example (copy).xml"),
+		new File("/home/user/Desktop/cache-example (copy).xml"),
+		new File("/home/user/Desktop/cache-example (copy).xml"),
+		new File("/home/user/Desktop/cache-example (copy).xml"));
+
+	bufferedReader(files);
+	System.out.println("******************************************************************");
+	System.out.println("******************************************************************");
+	commonsIO(files);
+	System.out.println("******************************************************************");
+	System.out.println("******************************************************************");
+	printLinesFromFilesJava8(files);
+	System.out.println("******************************************************************");
+	System.out.println("******************************************************************");
+	printLinesJava8InParallel(files);
 
 	// directories(new File("/home/user"));
 	//
@@ -77,7 +96,113 @@ public class Main
 
     }
 
-    public static void printLines(File file) throws IOException
+    public static void bufferedReader(List<File> files) throws Exception
+    {
+	long t0 = new Date().getTime();
+	long elapsed = 0;
+
+	BufferedReader reader = null;
+	for (File file : files)
+	{
+	    try
+	    {
+		reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")));
+		String line;
+		while ((line = reader.readLine()) != null)
+		{
+		    line.length();
+		    // System.out.println(line);
+		}
+	    } catch (IOException e)
+	    {
+		// log error
+	    } finally
+	    {
+		if (reader != null)
+		{
+		    try
+		    {
+			reader.close();
+		    } catch (IOException e)
+		    {
+			// log warning
+		    }
+		}
+	    }
+	}
+
+	elapsed = new Date().getTime() - t0;
+	System.out.printf("bufferedReader: Elapsed time:\t %d ms", elapsed);
+	System.out.println();
+
+    }
+
+    public static void commonsIO(List<File> files) throws Exception
+    {
+	long t0 = new Date().getTime();
+	long elapsed = 0;
+
+	BufferedReader reader = null;
+	for (File file : files)
+	{
+	    try
+	    {
+		reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")));
+		String line;
+		while ((line = reader.readLine()) != null)
+		{
+		    // System.out.println(line);
+		    line.length();
+		}
+	    } catch (IOException e)
+	    {
+		// log error
+	    } finally
+	    {
+		if (reader != null)
+		{
+		    try
+		    {
+			reader.close();
+		    } catch (IOException e)
+		    {
+			// log warning
+		    }
+		}
+	    }
+	}
+
+	elapsed = new Date().getTime() - t0;
+	System.out.printf("commonsIO: Elapsed time:\t %d ms", elapsed);
+	System.out.println();
+
+    }
+
+    public static void printLinesFromFilesJava8(List<File> files) throws Exception
+    {
+	long t0 = new Date().getTime();
+	long elapsed = 0;
+
+	files.stream().forEach(f -> {
+	    try (
+		    Stream<String> lines = Files.lines(f.toPath(), StandardCharsets.UTF_8))
+	    {
+		lines.onClose(() -> System.out.println("Done!"))
+			.forEach(l -> l.length()/* System.out::println */);
+	    } catch (IOException e)
+	    {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+	});
+
+	elapsed = new Date().getTime() - t0;
+	System.out.printf("printLinesJava8: Elapsed time:\t %d ms", elapsed);
+	System.out.println();
+
+    }
+
+    public static void printLinesJava8(File file) throws Exception
     {
 	long t0 = new Date().getTime();
 	long elapsed = 0;
@@ -86,16 +211,62 @@ public class Main
 	try (
 		Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8))
 	{
-	    lines.onClose(() -> System.out.println("Done!")).forEach(System.out::println);
+	    lines.onClose(() -> System.out.println("Done!"))
+		    .forEach(l -> l.length()/* System.out::println */);
 	}
 
 	elapsed = new Date().getTime() - t0;
-	System.out.printf("printLines: Elapsed time:\t %d ms", elapsed);
+	System.out.printf("printLinesJava8: Elapsed time:\t %d ms", elapsed);
 	System.out.println();
 
     }
 
-    public static void rangeForEachOrdered(File file) throws IOException
+    public static void printLinesJava8InParallel(List<File> files) throws IOException
+    {
+	long t0 = new Date().getTime();
+	long elapsed = 0;
+
+	// final Path path = files.toPath();
+	files.stream().parallel().forEach(f -> {
+	    try (
+			Stream<String> lines = Files.lines(f.toPath(), StandardCharsets.UTF_8))
+		{
+		    lines.parallel().onClose(() -> System.out.println("Done!"))
+			    .forEach(l -> l.length()/* System.out::println */);
+		} catch (IOException e)
+		{
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		}
+	});
+	
+
+	elapsed = new Date().getTime() - t0;
+	System.out.printf("printLinesJava8InParallel: Elapsed time:\t %d ms", elapsed);
+	System.out.println();
+
+    }
+
+    public static void printLinesJava8InParallel(File file) throws IOException
+    {
+	long t0 = new Date().getTime();
+	long elapsed = 0;
+
+	final Path path = file.toPath();
+	try (
+		Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8))
+	{
+	    lines.parallel().onClose(() -> System.out.println("Done!"))
+		    .forEach(l -> l.length()/* System.out::println */);
+	}
+
+	elapsed = new Date().getTime() - t0;
+	System.out.printf("printLinesJava8InParallel: Elapsed time:\t %d ms", elapsed);
+	System.out.println();
+
+    }
+
+    public static void rangeForEachOrdered(File file) throws Exception
     {
 	// IntStream.range(0, 9).parallel().forEach(System.out::print);
 	long t0 = new Date().getTime();

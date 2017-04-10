@@ -76,6 +76,13 @@ public class Winner {
                                              .distinct()
                                              .collect(toList());
         System.out.println("distinctTDFWinners - " + distinctTDFWinners);
+
+        // allTDFWinners
+        List<String> allTDFWinners = tdfWinners
+        	.stream()
+        	.map(Winner::getName)
+        	.collect(toList());
+        System.out.println("allTDFWinners - " + allTDFWinners);
         long numberOfDistinceWinners = tdfWinners
                                           .stream()
                                           .map(Winner::getName)
